@@ -5,6 +5,6 @@ Exam repository for PGR301 at Westerdals OSLO ACT/Høyskolen Kristiania Fall 201
 TODO Snappy description 
 
 
-[Documentation](docs/README.md)
+[Documentation](https://github.com/pgr301-exam-atumn-2018-100018/pgr301-exam-18-infra/blob/master/docs/readme.md)
 
 [Infrastructure](https://github.com/pgr301-exam-atumn-2018-100018/pgr301-exam-18-infra)

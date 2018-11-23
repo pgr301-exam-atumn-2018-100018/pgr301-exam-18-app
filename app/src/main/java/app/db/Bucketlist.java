@@ -1,27 +1,60 @@
 package app.db;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import java.util.HashMap;
+import java.util.Map;
 
-@Entity
 public class Bucketlist
 {
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String listItem;
+    //CRUD = Create, Read, Update, Delete
+    Map<Integer, String> map = new HashMap<Integer, String>();
 
-    public Bucketlist() { }
+    //Create
+    public boolean addItem(String item)
+    {
+        int id = getSize() + 1;
+        map.put(id, item);
+        return true;
+    }
 
-    public Long getId() {
-        return id;
+    //Read
+    public Map getAll()
+    {
+        return map;
     }
-    public void setId(Long id) {
-        this.id = id;
+
+    public Object getItem(int id)
+    {
+        return map.get(id);
     }
-    public String getListItem() {
-        return listItem;
+
+    //Update
+    public boolean updateItem(int id, String newString)
+    {
+        if(!map.containsKey(id))
+            return false;
+
+        map.replace(id, newString);
+        return true;
     }
-    public void setListItem(String listItem) { this.listItem = listItem; }
+
+    //Delete
+    public boolean deleteItem(int id)
+    {
+        if(!map.containsKey(id))
+            return false;
+
+        map.remove(id);
+        return true;
+    }
+
+    public boolean clearBucketList()
+    {
+        map.clear();
+        return true;
+    }
+
+    public int getSize()
+    {
+        return map.size();
+    }
 }
