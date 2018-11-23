@@ -10,7 +10,7 @@ public class Bucketlist
     @Id
     @GeneratedValue
     private Long id;
-    private String entry;
+    private String listItem;
 
     public Bucketlist() { }
 
@@ -20,8 +20,8 @@ public class Bucketlist
     public void setId(Long id) {
         this.id = id;
     }
-    public String getEntry() {
-        return entry;
+    public String getListItem() {
+        return listItem;
     }
-    public void setEntry(String entry) { this.entry = entry; }
+    public void setListItem(String listItem) { this.listItem = listItem; }
 }
