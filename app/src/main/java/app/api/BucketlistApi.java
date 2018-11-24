@@ -2,6 +2,7 @@ package app.api;
 
 import app.db.Bucketlist;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
     3. Spring-boot:run
     4. Go to one of the API port listed below
 
-    http://localhost:8080/add-item?item=Go%20skydiving
+    http://localhost:8080/add-item?item=Go skydiving
     http://localhost:8080/get-list
     http://localhost:8080/get-item?id=1
     http://localhost:8080/update-item?id=1&item=Dance all the Fortnite dances
