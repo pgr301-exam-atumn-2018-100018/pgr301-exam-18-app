@@ -16,11 +16,16 @@ public class BucketlistApiTest
         3. Run tests
     */
 
+    //setup method mainly from https://semaphoreci.com/community/tutorials/testing-rest-endpoints-using-rest-assured
     @Before
     public void setup()
     {
-        //Clear map
-        testClearData();
+        //Clear map (IMDB)
+        String created = given()
+                .post("/delete-all")
+                .then()
+                .statusCode(200)
+                .extract().asString();
 
         String port = System.getProperty("server.port");
         if (port == null)
