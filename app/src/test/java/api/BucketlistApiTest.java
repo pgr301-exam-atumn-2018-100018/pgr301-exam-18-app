@@ -54,8 +54,8 @@ public class BucketlistApiTest
         String res = given()
                 .get("/get-list")
                 .then()
-                .extract()
-                .asString();
+                .extract().asString();
+
         assertEquals(res, "{}");
     }
 
@@ -88,8 +88,7 @@ public class BucketlistApiTest
         String getItem = given()
                 .get("get-item?id=" + id)
                 .then()
-                .extract()
-                .asString();
+                .extract().asString();
 
         assertEquals(getItem, newItem);
     }
@@ -114,13 +113,13 @@ public class BucketlistApiTest
         String getItem = given()
                 .get("get-item?id=" + id)
                 .then()
-                .extract()
-                .asString();
+                .extract().asString();
 
         assertEquals(getItem, newItem);
 
         String updated = given()
-                .formParam("id", id, "item", updateItem)
+                .formParam("id", id)
+                .formParam("item", updateItem)
                 .when()
                 .post("/update-item")
                 .then()
@@ -132,8 +131,7 @@ public class BucketlistApiTest
         String getUpdatedItem = given()
                 .get("get-item?id=" + id)
                 .then()
-                .extract()
-                .asString();
+                .extract().asString();
 
         assertEquals(getUpdatedItem, updateItem); //TODO
     }
@@ -157,8 +155,7 @@ public class BucketlistApiTest
         String getItem = given()
                 .get("get-item?id=" + id)
                 .then()
-                .extract()
-                .asString();
+                .extract().asString();
 
         assertEquals(getItem, newItem);
 
@@ -175,8 +172,7 @@ public class BucketlistApiTest
         String res = given()
                 .get("/get-list")
                 .then()
-                .extract()
-                .asString();
+                .extract().asString();
 
         assertEquals(res, "{}");
     }
@@ -188,14 +184,8 @@ public class BucketlistApiTest
                 .post("/delete-all")
                 .then()
                 .statusCode(200)
-                .extract()
-                .asString();
+                .extract().asString();
 
         assertEquals(created, "true");
     }
 }
-
-
-//    String res = given().get("/get-list")
-//            .then().extract().asString();
-//    System.out.println(res);
