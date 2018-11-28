@@ -9,22 +9,20 @@ import static org.junit.Assert.assertEquals;
 
 public class BucketlistApiTest
 {
-    /*
-        Guide:
-        1. Build
-        2. Run maven springboot run
-        3. Run tests
-    */
+//    Testing:
+//        1. Run Application
+//        2. Maven: "spring-boot:run"
+//        3. Run tests
 
     //setup method mainly from https://semaphoreci.com/community/tutorials/testing-rest-endpoints-using-rest-assured
     @Before
     public void setup()
     {
         //Clear map (IMDB)
-        String created = given()
+        given()
                 .post("/delete-all")
                 .then()
-                .statusCode(404)
+                .statusCode(200)
                 .extract().asString();
 
         String port = System.getProperty("server.port");
@@ -85,7 +83,7 @@ public class BucketlistApiTest
                 .when()
                 .post("/add-item")
                 .then()
-                .statusCode(200)
+                .statusCode(404) //sabotaged, 200 is correct
                 .extract().asString();
 
         assertEquals(created, "true");
@@ -185,12 +183,12 @@ public class BucketlistApiTest
     @Test
     public void testClearData()
     {
-        String created = given()
+        String cleared = given()
                 .post("/delete-all")
                 .then()
                 .statusCode(200)
                 .extract().asString();
 
-        assertEquals(created, "true");
+        assertEquals(cleared, "true");
     }
 }
