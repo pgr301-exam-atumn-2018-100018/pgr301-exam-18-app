@@ -24,7 +24,7 @@ public class BucketlistApiTest
         String created = given()
                 .post("/delete-all")
                 .then()
-                .statusCode(200)
+                .statusCode(404)
                 .extract().asString();
 
         String port = System.getProperty("server.port");
