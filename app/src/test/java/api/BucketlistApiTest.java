@@ -83,7 +83,7 @@ public class BucketlistApiTest
                 .when()
                 .post("/add-item")
                 .then()
-                .statusCode(402) //sabotaged, 200 is correct
+                .statusCode(200)
                 .extract().asString();
 
         assertEquals(created, "true");
