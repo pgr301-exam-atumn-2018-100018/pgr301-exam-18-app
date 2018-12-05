@@ -3,16 +3,10 @@ package app.api;
 import app.Bucketlist;
 
 import app.GraphiteMetricsConfig;
-import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.DataOutputStream;
-import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -34,25 +28,10 @@ public class BucketlistApi
 {
     private Bucketlist bl = new Bucketlist();
     final MetricRegistry metrics = new MetricRegistry();
-    private final Counter apiCalls = metrics.counter("apiCalls");
-
-    private void sendReportTcp()
-    {
-        String hostedGraphiteHostname = ""; //not used. add Hosted Graphite hostname ("abcdefgh.carbon.hostedgraphite.com")
-
-        try
-        {
-            Socket conn = new Socket(hostedGraphiteHostname, 2003);
-            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-            dos.writeBytes("test.testing 1.2\n");
-            conn.close();
-        }
-        catch (Exception e)
-        {
-            //deal with it
-            System.out.println("error: " + e);
-        }
-    }
+    private final Meter apiCalls = metrics.meter("API calls");
+    private final Timer responses = metrics.timer("Response time");
+    private final Counter itemsInList = metrics.counter("Number of items in list");
+    private GraphiteMetricsConfig gmc;
 
     //Counts all request made to the API
     private void reportToConsole()
@@ -62,28 +41,35 @@ public class BucketlistApi
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         reporter.start(1, TimeUnit.SECONDS);
-        Meter requests = metrics.meter("requests");
-        requests.mark();
     }
 
     @RequestMapping("/add-item")
     public Object addItem(@RequestParam(value="item", defaultValue="error") String item)
     {
         reportToConsole();
+        itemsInList.inc();
+        apiCalls.mark();
+
         return bl.addItem(item);
     }
 
     @RequestMapping("/get-list")
     public Object getList()
     {
+        final Timer.Context context = responses.time();
         reportToConsole();
-        return bl.getAll();
+        apiCalls.mark();
+
+        try { return bl.getAll(); }
+        finally { context.stop(); }
     }
 
     @RequestMapping("/get-item")
     public Object getItem(@RequestParam(value="id", defaultValue="0") int id)
     {
         reportToConsole();
+        apiCalls.mark();
+
         Object item = bl.getItem(id);
         if (item != null)
             return item;
@@ -95,6 +81,8 @@ public class BucketlistApi
     public Object updateItem(@RequestParam(value="id", defaultValue="0") int id, @RequestParam(value="item", defaultValue="error") String item)
     {
         reportToConsole();
+        apiCalls.mark();
+
         return bl.updateItem(id, item);
     }
 
@@ -102,13 +90,24 @@ public class BucketlistApi
     public Object deleteItem(@RequestParam(value="id", defaultValue="0") int id)
     {
         reportToConsole();
-        return bl.deleteItem(id);
+        apiCalls.mark();
+
+        if (bl.deleteItem(id))
+        {
+            itemsInList.dec();
+            return true;
+        }
+        else
+            return false;
     }
 
     @RequestMapping("/delete-all")
     public boolean deleteAll()
     {
         reportToConsole();
+        itemsInList.dec(itemsInList.getCount());
+        apiCalls.mark();
+
         return bl.clearBucketList();
     }
 }
