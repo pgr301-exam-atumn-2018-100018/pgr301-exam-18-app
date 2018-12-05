@@ -136,7 +136,7 @@ public class BucketlistApiTest
                 .then()
                 .extract().asString();
 
-        assertEquals(getUpdatedItem, updateItem); //TODO
+        assertEquals(getUpdatedItem, updateItem);
     }
 
     @Test
