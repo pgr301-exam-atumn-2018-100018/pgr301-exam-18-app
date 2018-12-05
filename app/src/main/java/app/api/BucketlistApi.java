@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BucketlistApi
 {
     private Bucketlist bl = new Bucketlist();
-    public MetricRegistry metrics = new MetricRegistry();
+    private final MetricRegistry metrics = new MetricRegistry();
     private final Meter apiCalls = metrics.meter("API calls");
     private final Timer responses = metrics.timer("Response time");
     private final Counter itemsInList = metrics.counter("Number of items in list");

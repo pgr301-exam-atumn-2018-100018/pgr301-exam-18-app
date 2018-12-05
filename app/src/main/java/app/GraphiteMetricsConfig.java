@@ -26,6 +26,7 @@ public class GraphiteMetricsConfig
         String hostedGraphiteHostname = ""; //TODO add Hosted Graphite hostname ("abcdefgh.carbon.hostedgraphite.com")
         String hostedGraphiteApiKey = ""; //TODO add Hosted Graphite API key (long string of chars and numbers)
 
+        //Report to Hosted Graphite
         Graphite graphite = new Graphite(new InetSocketAddress(hostedGraphiteHostname, 2003));
         GraphiteReporter reporter = GraphiteReporter.forRegistry(registry)
                 .prefixedWith(hostedGraphiteApiKey)
@@ -35,6 +36,14 @@ public class GraphiteMetricsConfig
                 .build(graphite);
         reporter.start(1, TimeUnit.SECONDS);
         sendReportTcp(hostedGraphiteHostname, hostedGraphiteApiKey);
+
+        //Report to console
+        ConsoleReporter consoleReporter = ConsoleReporter.forRegistry(registry)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        consoleReporter.start(1, TimeUnit.SECONDS);
+
         return reporter;
     }
 
