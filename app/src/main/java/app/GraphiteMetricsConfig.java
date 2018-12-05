@@ -6,7 +6,9 @@ import com.codahale.metrics.graphite.GraphiteReporter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.DataOutputStream;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -32,6 +34,23 @@ public class GraphiteMetricsConfig
                 .filter(MetricFilter.ALL)
                 .build(graphite);
         reporter.start(1, TimeUnit.SECONDS);
+        sendReportTcp(hostedGraphiteHostname, hostedGraphiteApiKey);
         return reporter;
+    }
+
+    private void sendReportTcp(String hostedGraphiteHostname, String msg)
+    {
+        try
+        {
+            Socket conn = new Socket(hostedGraphiteHostname, 2003);
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+            dos.writeBytes(msg + ".100018 1.2\n");
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            //deal with it
+            System.out.println("error: " + e);
+        }
     }
 }
